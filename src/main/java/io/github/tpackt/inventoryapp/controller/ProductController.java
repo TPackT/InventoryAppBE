@@ -13,13 +13,20 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @GetMapping("/")
+    public String index() {
+        return "Inventory App is running!";
+    }
+
     @GetMapping("/products")
     public List<Product> getProducts() {
+        //System.out.println("Routed to products: ");
+
         return productService.getProducts();
     }
 
     @GetMapping("/products/{id}")
-    public Product getProduct(@PathVariable String id) {
+    public Product getProduct(@PathVariable Long id) {
         return productService.getProduct(id);
     }
 
@@ -29,12 +36,12 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public void updateProduct(@PathVariable String id, @RequestBody Product product) {
+    public void updateProduct(@PathVariable Long id, @RequestBody Product product) {
         productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/products/{id}")
-    public void deleteProduct(@PathVariable String id) {
+    public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
     }
 

@@ -1,33 +1,63 @@
 package io.github.tpackt.inventoryapp.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
+@Table(name = "products")
 public class Product {
 
-    private static int idSerial = 1;
+    //private static int idSerial = 1; --pre-database
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
-    private String id;
+    @Column(name = "barcode")
     private String barcode;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "price")
     private int price;
+
+    @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "description")
     private String desc;
-    private String category;
-    private String createdTs;
-    private String updatedTs;
+
+    @Column(name = "category_id")
+    private int category;
+
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdTs;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedTs;
 
 
     public Product() {
+        /*
         this.id = String.valueOf(idSerial);
         idSerial++;
+        */ //pre-database
+
     }
 
-    public Product(String id) {
+    public Product(Long id) {
         this.id = id;
 
     }
 
-    public Product(String id, String barcode, String name, String size, int price, int quantity, String desc, String category, String createdTs, String updatedTs) {
-        this.id = String.valueOf(idSerial);
-        idSerial++;
+    public Product(Long id, String barcode, String name, String size, int price, int quantity, String desc, int category, LocalDateTime createdTs, LocalDateTime updatedTs) {
         this.barcode = barcode;
         this.name = name;
         this.price = price;
@@ -39,7 +69,7 @@ public class Product {
     }
 
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -51,7 +81,7 @@ public class Product {
         return barcode;
     }
 
-    public void setBarcode(){
+    public void setBarcode(String barcode){
         this.barcode = barcode;
     }
 
@@ -59,7 +89,7 @@ public class Product {
         return name;
     }
 
-    public void setName() {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -77,15 +107,15 @@ public class Product {
         return desc;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public String getCreatedTs() {
+    public LocalDateTime getCreatedTs() {
         return createdTs;
     }
 
-    public String getUpdatedTs() {
+    public LocalDateTime getUpdatedTs() {
         return updatedTs;
     }
 
@@ -101,15 +131,15 @@ public class Product {
         this.desc = desc;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
-    public void setCreatedTs(String createdTs) {
+    public void setCreatedTs(LocalDateTime createdTs) {
         this.createdTs = createdTs;
     }
 
-    public void setUpdatedTs(String updatedTs) {
+    public void setUpdatedTs(LocalDateTime updatedTs) {
         this.updatedTs = updatedTs;
     }
 
