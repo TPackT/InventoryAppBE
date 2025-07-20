@@ -1,12 +1,11 @@
 package io.github.tpackt.inventoryapp.service;
 
-import io.github.tpackt.inventoryapp.ProductRepository;
+import io.github.tpackt.inventoryapp.repository.ProductRepository;
 import io.github.tpackt.inventoryapp.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -54,7 +53,6 @@ public class ProductService {
             }
         }
           --without db */
-
         Product prevProduct = productRepository.findById(prevId).orElseThrow(() -> new RuntimeException("Product not found"));
 
         prevProduct.setName(updatedProduct.getName());
