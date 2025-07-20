@@ -2,11 +2,16 @@ package io.github.tpackt.inventoryapp.service;
 
 import io.github.tpackt.inventoryapp.repository.ProductRepository;
 import io.github.tpackt.inventoryapp.model.Product;
+import io.github.tpackt.inventoryapp.dto.ProductRequest;
+import io.github.tpackt.inventoryapp.dto.ProductResponse;
+import io.github.tpackt.inventoryapp.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 public class ProductService {
@@ -23,27 +28,30 @@ public class ProductService {
 
      */
 
-    public List<Product> getProducts() {
+    public List<ProductResponse> getProducts() {
         //return products; --without db
 
         List<Product> products = new ArrayList<>();
-        productRepository.findAll()
-                .forEach(products::add);
-        return products;
+        return productRepository.findAll().stream()
+                .map(ProductMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Product getProduct(Long id){
+    public ProductResponse getProduct(Long id){
         //return products.stream().filter(p -> p.getId().equals(id)).findFirst().get(); --without db
 
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id)
+                .map(ProductMapper::toDto)
+                .orElse(null);
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(ProductRequest productRequest) {
         //products.add(product); --without db
+        Product product = ProductMapper.toEntity(productRequest);
         productRepository.save(product);
     }
 
-    public void updateProduct(Long prevId, Product updatedProduct) {
+    public void updateProduct(Long prevId, ProductRequest updatedRequest) {
         /*
         for(int i = 0; i < products.size(); i++) {
             Product p = products.get(i);
@@ -55,12 +63,12 @@ public class ProductService {
           --without db */
         Product prevProduct = productRepository.findById(prevId).orElseThrow(() -> new RuntimeException("Product not found"));
 
-        prevProduct.setName(updatedProduct.getName());
-        prevProduct.setBarcode(updatedProduct.getBarcode());
-        prevProduct.setPrice(updatedProduct.getPrice());
-        prevProduct.setQuantity(updatedProduct.getQuantity());
-        prevProduct.setDesc(updatedProduct.getDesc());
-        prevProduct.setCategory(updatedProduct.getCategory());
+        prevProduct.setName(updatedRequest.getName());
+        prevProduct.setBarcode(updatedRequest.getBarcode());
+        prevProduct.setPrice(updatedRequest.getPrice());
+        prevProduct.setQuantity(updatedRequest.getQuantity());
+        prevProduct.setDesc(updatedRequest.getDesc());
+        prevProduct.setCategory(updatedRequest.getCategory());
 
 
         productRepository.save(prevProduct);
