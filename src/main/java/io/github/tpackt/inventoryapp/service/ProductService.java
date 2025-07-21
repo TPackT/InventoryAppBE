@@ -1,5 +1,6 @@
 package io.github.tpackt.inventoryapp.service;
 
+import io.github.tpackt.inventoryapp.exception.ProductNotFoundException;
 import io.github.tpackt.inventoryapp.repository.ProductRepository;
 import io.github.tpackt.inventoryapp.model.Product;
 import io.github.tpackt.inventoryapp.dto.ProductRequest;
@@ -39,10 +40,10 @@ public class ProductService {
 
     public ProductResponse getProduct(Long id){
         //return products.stream().filter(p -> p.getId().equals(id)).findFirst().get(); --without db
-
-        return productRepository.findById(id)
+        ProductResponse productResponse = productRepository.findById(id)
                 .map(ProductMapper::toDto)
-                .orElse(null);
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        return productResponse;
     }
 
     public void addProduct(ProductRequest productRequest) {
@@ -61,7 +62,8 @@ public class ProductService {
             }
         }
           --without db */
-        Product prevProduct = productRepository.findById(prevId).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product prevProduct = productRepository.findById(prevId)
+                .orElseThrow(() -> new ProductNotFoundException(prevId));
 
         prevProduct.setName(updatedRequest.getName());
         prevProduct.setBarcode(updatedRequest.getBarcode());
@@ -77,6 +79,9 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         // products.removeIf(t -> t.getId().equals(id)); --without db
+        if (productRepository.findById(id).isEmpty()) {
+            throw new ProductNotFoundException(id);
+        }
         productRepository.deleteById(id);
     }
 
