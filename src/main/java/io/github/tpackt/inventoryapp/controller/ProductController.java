@@ -1,11 +1,11 @@
 package io.github.tpackt.inventoryapp.controller;
 
-import io.github.tpackt.inventoryapp.mapper.ProductMapper;
-import io.github.tpackt.inventoryapp.model.Product;
 import io.github.tpackt.inventoryapp.service.ProductService;
 import io.github.tpackt.inventoryapp.dto.ProductRequest;
 import io.github.tpackt.inventoryapp.dto.ProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,14 +22,14 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<ProductResponse> getProducts() {
+    public ResponseEntity<List<ProductResponse>> getProducts() {
         //System.out.println("Routed to products: ");
-        return productService.getProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
     }
 
     @GetMapping("/products/{id}")
-    public ProductResponse getProduct(@PathVariable Long id) {
-        return productService.getProduct(id);
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProduct(id));
     }
 
     /* //TBD - fetch info from third-party API using barcode
@@ -41,18 +41,22 @@ public class ProductController {
     */
 
     @PostMapping("/products")
-    public void addProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<Void> addProduct(@RequestBody ProductRequest productRequest) {
         productService.addProduct(productRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+        //return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/products/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
+    public ResponseEntity <Void> updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
         productService.updateProduct(id, productRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/products/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
